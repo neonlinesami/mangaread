@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MangaRead</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #1a1a1a;
+            --accent-color: #ff4757;
+            --section-bg: #f5f5f5;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --text-color: #ffffff;
+            --section-bg: #2a2a2a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: 0.3s;
+        }
+
+        /* Навигация */
+        nav {
+            padding: 1rem;
+            background-color: var(--section-bg);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .tab-btn {
+            color: var(--text-color);
+            background: none;
+            border: none;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .tab-btn.active {
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        /* Основной контент */
+        main {
+            margin-top: 4rem;
+            padding: 2rem;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Карусель */
+        .carousel-section {
+            margin-bottom: 3rem;
+        }
+
+        .carousel-title {
+            margin-bottom: 1rem;
+            color: var(--accent-color);
+        }
+
+        .carousel {
+            display: flex;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            gap: 1rem;
+            padding-bottom: 1rem;
+            scrollbar-width: none;
+        }
+
+        .carousel::-webkit-scrollbar {
+            display: none;
+        }
+
+        .carousel-item {
+            min-width: 200px;
+            width: 200px;
+            transition: 0.3s;
+        }
+
+        .carousel-item:hover {
+            transform: scale(1.05);
+        }
+
+        .carousel-img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        /* Личный кабинет */
+        .profile-info {
+            background: var(--section-bg);
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .profile-info div {
+            margin: 1rem 0;
+        }
+
+        /* Модальные окна */
+        .auth-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--section-bg);
+            padding: 2rem;
+            border-radius: 8px;
+            z-index: 1000;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .close-btn {
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--text-color);
+        }
+
+        /* Переключатель темы */
+        .theme-toggle {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            padding: 0.5rem 1rem;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Модальные окна -->
+    <div id="loginModal" class="auth-modal">
+        <span class="close-btn" onclick="closeAllModals()">&times;</span>
+        <form class="auth-form" id="loginForm">
+            <h2>Вход</h2>
+            <input type="email" class="auth-input" placeholder="Email" required>
+            <input type="password" class="auth-input" placeholder="Пароль" required>
+            <button type="submit" class="auth-button">Войти</button>
+            <div class="auth-links">
+                <span class="auth-link" onclick="showAuthModal('register')">Регистрация</span> | 
+                <span class="auth-link" onclick="showAuthModal('forgot')">Забыли пароль?</span>
+            </div>
+        </form>
+    </div>
+
+    <div id="registerModal" class="auth-modal">
+        <span class="close-btn" onclick="closeAllModals()">&times;</span>
+        <form class="auth-form" id="registerForm">
+            <h2>Регистрация</h2>
+            <input type="email" class="auth-input" placeholder="Email" required>
+            <input type="password" class="auth-input" placeholder="Пароль" required>
+            <input type="password" class="auth-input" placeholder="Повторите пароль" required>
+            <button type="submit" class="auth-button">Зарегистрироваться</button>
+            <div class="auth-links">
+                <span class="auth-link" onclick="showAuthModal('login')">Войти</span>
+            </div>
+        </form>
+    </div>
+
+    <div id="forgotModal" class="auth-modal">
+        <span class="close-btn" onclick="closeAllModals()">&times;</span>
+        <form class="auth-form" id="forgotForm">
+            <h2>Восстановление пароля</h2>
+            <input type="email" class="auth-input" placeholder="Email" required>
+            <button type="submit" class="auth-button">Отправить ссылку</button>
+            <div class="auth-links">
+                <span class="auth-link" onclick="showAuthModal('login')">Войти</span>
+            </div>
+        </form>
+    </div>
+
+    <nav>
+        <div class="nav-tabs">
+            <button class="tab-btn active" data-tab="main">Главное</button>
+            <button class="tab-btn" data-tab="ratings">Рейтинги</button>
+            <button class="tab-btn" data-tab="catalog">Каталог</button>
+            <button class="tab-btn" data-tab="profile" id="profileTab" style="display: none;">Кабинет</button>
+        </div>
+        <div class="user-panel" id="userPanel">
+            <span class="auth-link" onclick="showAuthModal('login')">Войти</span>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Основные вкладки -->
+        <div id="profile" class="tab-content">
+            <div class="profile-info" id="profileContent"></div>
+        </div>
+        
+        <!-- Остальные вкладки остаются без изменений -->
+    </main>
+
+    <button class="theme-toggle" onclick="toggleTheme()">Сменить тему</button>
+
+    <script>
+        class User {
+            constructor(email, password) {
+                this.email = email;
+                this.password = password;
+                this.registrationDate = new Date().toLocaleDateString();
+                this.readChapters = 0;
+                this.likesCount = 0;
+                this.favorites = [];
+            }
+        }
+
+        class AuthSystem {
+            constructor() {
+                this.users = JSON.parse(localStorage.getItem('users')) || [];
+                this.currentUser = null;
+            }
+
+            register(email, password) {
+                if (this.users.some(u => u.email === email)) return false;
+                const newUser = new User(email, password);
+                this.users.push(newUser);
+                localStorage.setItem('users', JSON.stringify(this.users));
+                return true;
+            }
+
+            login(email, password) {
+                const user = this.users.find(u => u.email === email && u.password === password);
+                if (user) {
+                    this.currentUser = user;
+                    return true;
+                }
+                return false;
+            }
+
+            logout() {
+                this.currentUser = null;
+            }
+        }
+
+        const auth = new AuthSystem();
+
+        function updateProfileContent() {
+            const profileContent = document.getElementById('profileContent');
+            if (auth.currentUser) {
+                profileContent.innerHTML = `
+                    <h2>Личный кабинет</h2>
+                    <div>Email: ${auth.currentUser.email}</div>
+                    <div>Дата регистрации: ${auth.currentUser.registrationDate}</div>
+                    <div>Прочитано глав: ${auth.currentUser.readChapters}</div>
+                    <div>Поставлено лайков: ${auth.currentUser.likesCount}</div>
+                `;
+            }
+        }
+
+        function toggleTheme() {
+            document.body.dataset.theme = 
+                document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+            localStorage.setItem('theme', document.body.dataset.theme);
+        }
+
+        // Инициализация темы
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.body.dataset.theme = savedTheme;
+
+        // Обновлённый скролл
+        function initCarousel(containerId, items) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = items.map(item => `
+                <div class="carousel-item">
+                    <img src="${item.image}" class="carousel-img">
+                    <div class="carousel-info">
+                        <div>Оценка: ${item.rating}</div>
+                        <div>Лайки: ${item.likes}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+
+            container.addEventListener('mousedown', (e) => {
+                isDown = true;
+                startX = e.pageX - container.offsetLeft;
+                scrollLeft = container.scrollLeft;
+            });
+
+            container.addEventListener('mouseleave', () => {
+                isDown = false;
+            });
+
+            container.addEventListener('mouseup', () => {
+                isDown = false;
+            });
+
+            container.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - container.offsetLeft;
+                const walk = (x - startX) * 2;
+                container.scrollLeft = scrollLeft - walk;
+            });
+        }
+
+        // Остальной код остаётся аналогичным предыдущим примерам
+        // с добавлением вызовов updateProfileContent при изменении
+        // состояния пользователя
+    </script>
+</body>
+</html>
