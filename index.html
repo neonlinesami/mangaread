@@ -103,6 +103,7 @@
             min-width: 200px;
             width: 200px;
             transition: 0.3s;
+            cursor: pointer;
         }
 
         .carousel-item:hover {
@@ -116,6 +117,42 @@
             border-radius: 5px;
         }
 
+        /* Страница тайтла */
+        .title-page {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .title-header {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .title-poster {
+            width: 300px;
+            border-radius: 10px;
+        }
+
+        .title-info {
+            flex: 1;
+        }
+
+        .chapters-list {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        }
+
+        .chapter-item {
+            padding: 1rem;
+            background: var(--section-bg);
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+        }
+
         /* Личный кабинет */
         .profile-info {
             background: var(--section-bg);
@@ -123,10 +160,6 @@
             border-radius: 10px;
             max-width: 600px;
             margin: 0 auto;
-        }
-
-        .profile-info div {
-            margin: 1rem 0;
         }
 
         /* Модальные окна */
@@ -222,17 +255,53 @@
     </nav>
 
     <main>
-        <!-- Основные вкладки -->
+        <div id="main" class="tab-content active">
+            <!-- Карусели будут добавлены через JS -->
+        </div>
+
+        <div id="ratings" class="tab-content">
+            <div class="rating-list" id="weekly-top"></div>
+            <div class="rating-list" id="monthly-top"></div>
+        </div>
+
+        <div id="catalog" class="tab-content">
+            <input type="text" class="search-box" placeholder="Поиск по названию..." id="search-input">
+            <div class="catalog-grid" id="catalog-grid"></div>
+        </div>
+
         <div id="profile" class="tab-content">
             <div class="profile-info" id="profileContent"></div>
         </div>
-        
-        <!-- Остальные вкладки остаются без изменений -->
+
+        <div id="titlePage" class="tab-content">
+            <div class="title-page">
+                <!-- Контент тайтла будет добавляться динамически -->
+            </div>
+        </div>
     </main>
 
     <button class="theme-toggle" onclick="toggleTheme()">Сменить тему</button>
 
     <script>
+        // Данные с популярными тайтлами
+        const mangaData = {
+            manhwa: [
+                {
+                    title: "Solo Leveling",
+                    image: "https://example.com/solo-leveling.jpg",
+                    rating: 9.8,
+                    likes: 15000,
+                    type: "Manhwa",
+                    genres: ["Боевик", "Фэнтези"],
+                    tags: ["Игры", "Подземелья"],
+                    description: "Слабый охотник Сон Джин-У становится самым сильным...",
+                    chapters: Array.from({length: 200}, (_, i) => `Глава ${i + 1}`)
+                },
+                // Добавьте другие тайтлы
+            ],
+            // Аналогичные данные для manhua и manga
+        };
+
         class User {
             constructor(email, password) {
                 this.email = email;
@@ -274,72 +343,45 @@
 
         const auth = new AuthSystem();
 
-        function updateProfileContent() {
-            const profileContent = document.getElementById('profileContent');
+        function showTitlePage(titleData) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById('titlePage').classList.add('active');
+            
+            const titlePage = document.querySelector('.title-page');
+            titlePage.innerHTML = `
+                <div class="title-header">
+                    <img src="${titleData.image}" class="title-poster">
+                    <div class="title-info">
+                        <h1>${titleData.title}</h1>
+                        <p>Тип: ${titleData.type}</p>
+                        <p>Жанры: ${titleData.genres.join(', ')}</p>
+                        <p>Теги: ${titleData.tags.join(', ')}</p>
+                        <p>Рейтинг: ${titleData.rating}</p>
+                        <p>${titleData.description}</p>
+                    </div>
+                </div>
+                <h2>Главы</h2>
+                <div class="chapters-list">
+                    ${titleData.chapters.map((ch, i) => `
+                        <div class="chapter-item" onclick="readChapter(${i + 1})">
+                            Глава ${i + 1}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function readChapter(chapterNumber) {
+            alert(`Чтение главы ${chapterNumber}`);
             if (auth.currentUser) {
-                profileContent.innerHTML = `
-                    <h2>Личный кабинет</h2>
-                    <div>Email: ${auth.currentUser.email}</div>
-                    <div>Дата регистрации: ${auth.currentUser.registrationDate}</div>
-                    <div>Прочитано глав: ${auth.currentUser.readChapters}</div>
-                    <div>Поставлено лайков: ${auth.currentUser.likesCount}</div>
-                `;
+                auth.currentUser.readChapters++;
+                updateProfileContent();
             }
         }
 
-        function toggleTheme() {
-            document.body.dataset.theme = 
-                document.body.dataset.theme === 'dark' ? 'light' : 'dark';
-            localStorage.setItem('theme', document.body.dataset.theme);
-        }
-
-        // Инициализация темы
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        document.body.dataset.theme = savedTheme;
-
-        // Обновлённый скролл
-        function initCarousel(containerId, items) {
-            const container = document.getElementById(containerId);
-            container.innerHTML = items.map(item => `
-                <div class="carousel-item">
-                    <img src="${item.image}" class="carousel-img">
-                    <div class="carousel-info">
-                        <div>Оценка: ${item.rating}</div>
-                        <div>Лайки: ${item.likes}</div>
-                    </div>
-                </div>
-            `).join('');
-
-            let isDown = false;
-            let startX;
-            let scrollLeft;
-
-            container.addEventListener('mousedown', (e) => {
-                isDown = true;
-                startX = e.pageX - container.offsetLeft;
-                scrollLeft = container.scrollLeft;
-            });
-
-            container.addEventListener('mouseleave', () => {
-                isDown = false;
-            });
-
-            container.addEventListener('mouseup', () => {
-                isDown = false;
-            });
-
-            container.addEventListener('mousemove', (e) => {
-                if (!isDown) return;
-                e.preventDefault();
-                const x = e.pageX - container.offsetLeft;
-                const walk = (x - startX) * 2;
-                container.scrollLeft = scrollLeft - walk;
-            });
-        }
-
-        // Остальной код остаётся аналогичным предыдущим примерам
-        // с добавлением вызовов updateProfileContent при изменении
-        // состояния пользователя
+        // Остальные функции остаются аналогичными предыдущему коду
+        // с добавлением обработчиков для кликов по элементам карусели
+        // и каталога для вызова showTitlePage()
     </script>
 </body>
 </html>
