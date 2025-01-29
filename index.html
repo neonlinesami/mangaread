@@ -5,307 +5,284 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MangaRead</title>
     <style>
-        :root {
-            --bg-color: #ffffff;
-            --text-color: #1a1a1a;
-            --accent-color: #ff4757;
-            --section-bg: #f5f5f5;
-            --menu-bg: #333;
-            --menu-text: #fff;
-        }
-
-        [data-theme="dark"] {
-            --bg-color: #1a1a1a;
-            --text-color: #ffffff;
-            --section-bg: #2a2a2a;
-            --menu-bg: #444;
-            --menu-text: #ddd;
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Arial', sans-serif;
         }
-
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            transition: 0.3s;
+            background-color: #1a1a1a;
+            color: white;
+            transition: background-color 0.3s, color 0.3s;
         }
-
-        /* Навигация */
+        body.light {
+            background-color: #ffffff;
+            color: black;
+        }
+        /* Мобильное меню */
         nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             padding: 1rem;
-            background-color: var(--section-bg);
+            background-color: #2a2a2a;
             position: fixed;
             width: 100%;
             top: 0;
             z-index: 100;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
-
+        .menu-icon {
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: none;
+        }
         .nav-tabs {
             display: flex;
             gap: 2rem;
         }
-
         .tab-btn {
-            color: var(--text-color);
+            color: white;
             background: none;
             border: none;
             padding: 0.5rem 1rem;
             cursor: pointer;
             transition: 0.3s;
         }
-
         .tab-btn.active {
-            border-bottom: 2px solid var(--accent-color);
+            border-bottom: 2px solid #ff4757;
         }
-
-        .menu-btn {
+        .mobile-menu {
             display: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        .sidebar {
             position: fixed;
             top: 0;
-            left: -250px;
-            width: 250px;
-            height: 100%;
-            background-color: var(--menu-bg);
-            color: var(--menu-text);
-            transition: 0.3s;
-            z-index: 1000;
-        }
-
-        .sidebar.active {
             left: 0;
+            width: 100%;
+            height: 100%;
+            background: #2a2a2a;
+            z-index: 200;
+            padding: 2rem;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
-
-        .sidebar ul {
-            list-style: none;
-            padding: 1rem;
+        .mobile-menu.active {
+            display: flex;
         }
-
-        .sidebar ul li {
-            margin: 1rem 0;
-        }
-
-        .sidebar ul li a {
-            color: var(--menu-text);
-            text-decoration: none;
-            font-size: 1.2rem;
-        }
-
-        .close-btn {
+        .close-menu {
             position: absolute;
-            right: 1rem;
             top: 1rem;
-            cursor: pointer;
+            right: 1rem;
             font-size: 1.5rem;
-            color: var(--menu-text);
+            cursor: pointer;
         }
-
         /* Основной контент */
         main {
             margin-top: 4rem;
             padding: 2rem;
         }
-
         .tab-content {
             display: none;
         }
-
         .tab-content.active {
             display: block;
         }
-
-        /* Карусель */
+        /* Главное меню */
         .carousel-section {
             margin-bottom: 3rem;
         }
-
         .carousel-title {
             margin-bottom: 1rem;
-            color: var(--accent-color);
+            color: #ff4757;
         }
-
         .carousel {
             display: flex;
             overflow-x: auto;
             scroll-behavior: smooth;
             gap: 1rem;
             padding-bottom: 1rem;
-            scrollbar-width: none;
         }
-
-        .carousel::-webkit-scrollbar {
-            display: none;
-        }
-
         .carousel-item {
             min-width: 200px;
             width: 200px;
             transition: 0.3s;
-            cursor: pointer;
         }
-
         .carousel-item:hover {
             transform: scale(1.05);
         }
-
         .carousel-img {
             width: 100%;
             height: 300px;
             object-fit: cover;
             border-radius: 5px;
         }
-
-        /* Страница тайтла */
-        .title-page {
-            padding: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
+        .carousel-info {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
         }
-
-        .title-header {
-            display: flex;
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .title-poster {
-            width: 300px;
-            border-radius: 10px;
-        }
-
-        .title-info {
-            flex: 1;
-        }
-
-        .chapters-list {
+        /* Рейтинги */
+        .rating-list {
             display: grid;
             gap: 1rem;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
         }
-
-        .chapter-item {
+        .rating-item {
+            display: flex;
+            align-items: center;
+            background: #2a2a2a;
             padding: 1rem;
-            background: var(--section-bg);
             border-radius: 5px;
-            text-align: center;
-            cursor: pointer;
         }
-
-        /* Личный кабинет */
-        .profile-info {
-            background: var(--section-bg);
-            padding: 2rem;
-            border-radius: 10px;
-            max-width: 600px;
-            margin: 0 auto;
+        .rating-img {
+            width: 80px;
+            height: 120px;
+            object-fit: cover;
+            margin-right: 1rem;
         }
-
-        /* Модальные окна */
+        /* Каталог */
+        .catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+        .search-box {
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            background: #2a2a2a;
+            border: none;
+            color: white;
+            border-radius: 5px;
+        }
+        .catalog-item {
+            background: #2a2a2a;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .catalog-item img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+        .catalog-info {
+            padding: 1rem;
+        }
+        /* Auth styles */
         .auth-modal {
             display: none;
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: var(--section-bg);
+            background: #2a2a2a;
             padding: 2rem;
             border-radius: 8px;
             z-index: 1000;
             width: 90%;
             max-width: 400px;
         }
-
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .auth-input {
+            padding: 0.8rem;
+            border-radius: 4px;
+            border: 1px solid #444;
+            background: #333;
+            color: white;
+        }
+        .auth-button {
+            padding: 0.8rem;
+            background: #ff4757;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .auth-links {
+            margin-top: 1rem;
+            text-align: center;
+        }
+        .auth-link {
+            color: #ff4757;
+            cursor: pointer;
+            text-decoration: underline;
+        }
         .close-btn {
             position: absolute;
-            right: 1rem;
-            top: 1rem;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
             cursor: pointer;
-            font-size: 1.5rem;
-            color: var(--text-color);
         }
-
-        /* Переключатель темы */
-        .theme-toggle {
+        /* Личный кабинет */
+        .profile-info {
+            text-align: center;
+        }
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+        }
+        /* Просмотр тайтла */
+        .manga-details {
+            text-align: center;
+        }
+        .manga-chapters {
+            display: flex;
+            overflow-x: auto;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .chapter-item {
+            padding: 0.5rem 1rem;
+            background: #ff4757;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        /* Тема */
+        .theme-switcher {
             position: fixed;
             bottom: 1rem;
             right: 1rem;
-            padding: 0.5rem;
-            background: var(--accent-color);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-        }
-
-        /* Поиск и фильтры */
-        .search-box {
-            width: 100%;
-            padding: 1rem;
-            margin-bottom: 2rem;
-            border: 1px solid var(--text-color);
-            border-radius: 5px;
-            background: var(--section-bg);
-            color: var(--text-color);
-        }
-
-        .filters {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .filter-select {
-            padding: 0.5rem;
-            border: 1px solid var(--text-color);
-            border-radius: 5px;
-            background: var(--section-bg);
-            color: var(--text-color);
-        }
-
-        /* Рейтинги и лайки */
-        .rating {
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .like-btn {
-            background: none;
-            border: none;
             cursor: pointer;
-            font-size: 1.5rem;
-            color: var(--accent-color);
         }
-
-        .like-btn.liked {
-            color: #ff4757;
+        .theme-icon {
+            font-size: 1.5rem;
+        }
+        /* Адаптация для мобильных устройств */
+        @media (max-width: 768px) {
+            .menu-icon {
+                display: block;
+            }
+            .nav-tabs {
+                display: none;
+            }
+            .nav-tabs.active {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .carousel-item {
+                min-width: 150px;
+            }
+            .rating-item {
+                flex-direction: column;
+                align-items: start;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Модальные окна -->
+    <!-- Auth Modals -->
     <div id="loginModal" class="auth-modal">
-        <span class="close-btn" onclick="closeAllModals()">&times;</span>
+        <span class="close-btn" onclick="closeAllModals()">×</span>
         <form class="auth-form" id="loginForm">
             <h2>Вход</h2>
             <input type="email" class="auth-input" placeholder="Email" required>
@@ -317,11 +294,11 @@
             </div>
         </form>
     </div>
-
     <div id="registerModal" class="auth-modal">
-        <span class="close-btn" onclick="closeAllModals()">&times;</span>
+        <span class="close-btn" onclick="closeAllModals()">×</span>
         <form class="auth-form" id="registerForm">
             <h2>Регистрация</h2>
+            <input type="text" class="auth-input" placeholder="Никнейм" id="nicknameInput" required>
             <input type="email" class="auth-input" placeholder="Email" required>
             <input type="password" class="auth-input" placeholder="Пароль" required>
             <input type="password" class="auth-input" placeholder="Повторите пароль" required>
@@ -331,9 +308,8 @@
             </div>
         </form>
     </div>
-
     <div id="forgotModal" class="auth-modal">
-        <span class="close-btn" onclick="closeAllModals()">&times;</span>
+        <span class="close-btn" onclick="closeAllModals()">×</span>
         <form class="auth-form" id="forgotForm">
             <h2>Восстановление пароля</h2>
             <input type="email" class="auth-input" placeholder="Email" required>
@@ -343,171 +319,99 @@
             </div>
         </form>
     </div>
-
-    <!-- Навигация -->
+    <div id="profileModal" class="auth-modal">
+        <div class="profile-info">
+            <img src="https://via.placeholder.com/100" alt="Аватар" class="profile-avatar">
+            <h2 id="profileNickname">Никнейм#1234</h2>
+            <p>Дата регистрации: <span id="profileRegistrationDate">01.01.2023</span></p>
+            <p>Прочитанные главы: <span id="profileChaptersRead">50</span></p>
+            <p>Лайки: <span id="profileLikes">10</span></p>
+            <button class="auth-link" onclick="closeAllModals()">Закрыть</button>
+        </div>
+    </div>
+    <div id="mangaDetailsModal" class="auth-modal">
+        <div class="manga-details">
+            <img src="" alt="Обложка" id="mangaCover">
+            <h2 id="mangaTitle"></h2>
+            <p id="mangaDescription"></p>
+            <div id="mangaGenres"></div>
+            <div id="mangaTags"></div>
+            <div class="manga-chapters" id="mangaChapters"></div>
+            <button class="auth-link" onclick="closeAllModals()">Закрыть</button>
+        </div>
+    </div>
     <nav>
-        <div class="menu-btn" onclick="toggleSidebar()">☰</div>
-        <div class="nav-tabs">
+        <span class="menu-icon" onclick="toggleMobileMenu()">☰</span>
+        <div class="nav-tabs" id="navTabs">
             <button class="tab-btn active" data-tab="main">Главное</button>
             <button class="tab-btn" data-tab="ratings">Рейтинги</button>
             <button class="tab-btn" data-tab="catalog">Каталог</button>
-            <button class="tab-btn" data-tab="profile" id="profileTab" style="display: none;">Кабинет</button>
         </div>
         <div class="user-panel" id="userPanel">
             <span class="auth-link" onclick="showAuthModal('login')">Войти</span>
         </div>
     </nav>
-
-    <!-- Боковое меню -->
-    <div class="sidebar">
-        <span class="close-btn" onclick="toggleSidebar()">&times;</span>
-        <ul>
-            <li><a href="#" data-tab="main" onclick="changeTab('main')">Главное</a></li>
-            <li><a href="#" data-tab="ratings" onclick="changeTab('ratings')">Рейтинги</a></li>
-            <li><a href="#" data-tab="catalog" onclick="changeTab('catalog')">Каталог</a></li>
-            <li><a href="#" data-tab="profile" onclick="changeTab('profile')">Кабинет</a></li>
-        </ul>
+    <div class="mobile-menu" id="mobileMenu">
+        <span class="close-menu" onclick="toggleMobileMenu()">×</span>
+        <button class="tab-btn active" data-tab="main" onclick="toggleMobileMenu()">Главное</button>
+        <button class="tab-btn" data-tab="ratings" onclick="toggleMobileMenu()">Рейтинги</button>
+        <button class="tab-btn" data-tab="catalog" onclick="toggleMobileMenu()">Каталог</button>
     </div>
-
-    <!-- Основной контент -->
     <main>
         <div id="main" class="tab-content active">
-            <input type="text" class="search-box" placeholder="Поиск по названию..." id="main-search">
-            <div class="filters">
-                <select class="filter-select" id="genre-filter">
-                    <option value="">Все жанры</option>
-                    <option value="Боевик">Боевик</option>
-                    <option value="Фэнтези">Фэнтези</option>
-                    <option value="Приключения">Приключения</option>
-                </select>
-                <select class="filter-select" id="type-filter">
-                    <option value="">Все типы</option>
-                    <option value="Manhwa">Manhwa</option>
-                    <option value="Manhua">Manhua</option>
-                    <option value="Manga">Manga</option>
-                </select>
+            <div class="carousel-section">
+                <h2 class="carousel-title">Манхва</h2>
+                <div class="carousel" id="manhwa-carousel"></div>
             </div>
-            <div class="carousel-section" id="main-carousel"></div>
+            <div class="carousel-section">
+                <h2 class="carousel-title">Маньхуа</h2>
+                <div class="carousel" id="manhua-carousel"></div>
+            </div>
+            <div class="carousel-section">
+                <h2 class="carousel-title">Манга</h2>
+                <div class="carousel" id="manga-carousel"></div>
+            </div>
         </div>
-
         <div id="ratings" class="tab-content">
+            <h2>Топ 10 за неделю</h2>
             <div class="rating-list" id="weekly-top"></div>
+            <h2 style="margin-top: 2rem">Топ 20 за месяц</h2>
             <div class="rating-list" id="monthly-top"></div>
         </div>
-
         <div id="catalog" class="tab-content">
-            <input type="text" class="search-box" placeholder="Поиск по названию..." id="catalog-search">
-            <div class="filters">
-                <select class="filter-select" id="catalog-genre-filter">
-                    <option value="">Все жанры</option>
-                    <option value="Боевик">Боевик</option>
-                    <option value="Фэнтези">Фэнтези</option>
-                    <option value="Приключения">Приключения</option>
-                </select>
-                <select class="filter-select" id="catalog-type-filter">
-                    <option value="">Все типы</option>
-                    <option value="Manhwa">Manhwa</option>
-                    <option value="Manhua">Manhua</option>
-                    <option value="Manga">Manga</option>
-                </select>
-            </div>
+            <input type="text" class="search-box" placeholder="Поиск по названию..." id="search-input">
             <div class="catalog-grid" id="catalog-grid"></div>
         </div>
-
-        <div id="profile" class="tab-content">
-            <div class="profile-info" id="profileContent"></div>
-        </div>
-
-        <div id="titlePage" class="tab-content">
-            <div class="title-page">
-                <!-- Контент тайтла будет добавляться динамически -->
-            </div>
-        </div>
     </main>
-
-    <!-- Переключатель темы -->
-    <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
-
+    <div class="theme-switcher" onclick="toggleTheme()">
+        <span class="theme-icon">🌙</span> Сменить тему
+    </div>
     <script>
-        // Данные с популярными тайтлами
-        const mangaData = {
-            manhwa: [
-                {
-                    title: "Solo Leveling",
-                    image: "https://example.com/solo-leveling.jpg",
-                    rating: 9.8,
-                    likes: 15000,
-                    type: "Manhwa",
-                    genres: ["Боевик", "Фэнтези"],
-                    tags: ["Игры", "Подземелья"],
-                    description: "Слабый охотник Сон Джин-У становится самым сильным...",
-                    chapters: Array.from({length: 200}, (_, i) => `Глава ${i + 1}`)
-                },
-                {
-                    title: "Tower of God",
-                    image: "https://example.com/tower-of-god.jpg",
-                    rating: 9.5,
-                    likes: 12000,
-                    type: "Manhwa",
-                    genres: ["Фэнтези", "Приключения"],
-                    tags: ["Башня", "Испытания"],
-                    description: "Мальчик по имени Баам начинает своё путешествие по Башне...",
-                    chapters: Array.from({length: 500}, (_, i) => `Глава ${i + 1}`)
-                }
-            ],
-            manhua: [
-                {
-                    title: "The God of High School",
-                    image: "https://example.com/god-of-high-school.jpg",
-                    rating: 9.3,
-                    likes: 10000,
-                    type: "Manhua",
-                    genres: ["Боевик", "Школа"],
-                    tags: ["Турниры", "Сверхспособности"],
-                    description: "Школьники соревнуются в турнире за звание Бога Высшей Школы...",
-                    chapters: Array.from({length: 400}, (_, i) => `Глава ${i + 1}`)
-                }
-            ],
-            manga: [
-                {
-                    title: "One Piece",
-                    image: "https://example.com/one-piece.jpg",
-                    rating: 9.9,
-                    likes: 20000,
-                    type: "Manga",
-                    genres: ["Приключения", "Комедия"],
-                    tags: ["Пираты", "Сокровища"],
-                    description: "Монки Д. Луффи и его команда ищут легендарное сокровище Ван Пис...",
-                    chapters: Array.from({length: 1000}, (_, i) => `Глава ${i + 1}`)
-                }
-            ]
-        };
-
+        // Модель пользователя
         class User {
-            constructor(email, password) {
+            constructor(nickname, email, password) {
+                this.nickname = nickname;
                 this.email = email;
                 this.password = password;
-                this.registrationDate = new Date().toLocaleDateString();
-                this.readChapters = 0;
-                this.likesCount = 0;
+                this.id = Math.floor(Math.random() * 10000);
                 this.favorites = [];
+                this.history = [];
+                this.registrationDate = new Date().toLocaleDateString();
             }
         }
-
+        // Система аутентификации
         class AuthSystem {
             constructor() {
                 this.users = JSON.parse(localStorage.getItem('users')) || [];
                 this.currentUser = null;
             }
-
-            register(email, password) {
+            register(nickname, email, password) {
                 if (this.users.some(u => u.email === email)) return false;
-                const newUser = new User(email, password);
+                const newUser = new User(nickname, email, password);
                 this.users.push(newUser);
                 localStorage.setItem('users', JSON.stringify(this.users));
                 return true;
             }
-
             login(email, password) {
                 const user = this.users.find(u => u.email === email && u.password === password);
                 if (user) {
@@ -516,140 +420,136 @@
                 }
                 return false;
             }
-
             logout() {
                 this.currentUser = null;
             }
         }
-
         const auth = new AuthSystem();
-
-        function showTitlePage(titleData) {
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            document.getElementById('titlePage').classList.add('active');
-            
-            const titlePage = document.querySelector('.title-page');
-            titlePage.innerHTML = `
-                <div class="title-header">
-                                        <img src="${titleData.image}" alt="${titleData.title}" class="title-poster">
-                    <div class="title-info">
-                        <h1>${titleData.title}</h1>
-                        <div class="rating">
-                            <span>Рейтинг: ${titleData.rating}</span>
-                            <button class="like-btn" onclick="toggleLike('${titleData.title}')">❤️</button>
-                            <span>${titleData.likes}</span>
-                        </div>
-                        <p><strong>Тип:</strong> ${titleData.type}</p>
-                        <p><strong>Жанры:</strong> ${titleData.genres.join(', ')}</p>
-                        <p><strong>Тэги:</strong> ${titleData.tags.join(', ')}</p>
-                        <p>${titleData.description}</p>
+        // Генерация данных
+        const generateData = (type, count) => {
+            return Array.from({length: count}, (_, i) => ({
+                title: `${type} ${i + 1}`,
+                image: `https://source.unsplash.com/random/200x300?manga,${type},${i}`,
+                rating: (Math.random() * 5 + 5).toFixed(1),
+                likes: Math.floor(Math.random() * 10000),
+                description: `Описание ${type} ${i + 1}. Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+                genres: ['Action', 'Adventure', 'Romance'],
+                tags: ['Shonen', 'Fantasy', 'School'],
+                chapters: Array.from({length: Math.floor(Math.random() * 10) + 1}, (_, i) => `Chapter ${i + 1}`)
+            }));
+        };
+        const data = {
+            manhwa: generateData('Manhwa', 10),
+            manhua: generateData('Manhua', 10),
+            manga: generateData('Manga', 10),
+            catalog: generateData('Manga', 50)
+        };
+        // Инициализация каруселей с бесконечным скроллом
+        function initInfiniteCarousel(containerId, items) {
+            const container = document.getElementById(containerId);
+            const cloneItems = items => items.map(item => {
+                const div = document.createElement('div');
+                div.className = 'carousel-item';
+                div.innerHTML = `
+                    <img src="${item.image}" class="carousel-img">
+                    <div class="carousel-info">
+                        <div>Оценка: ${item.rating}</div>
+                        <div>Лайки: ${item.likes}</div>
                     </div>
-                </div>
-                <div class="chapters-list">
-                    ${titleData.chapters.map(chapter => `
-                        <div class="chapter-item" onclick="openChapter('${titleData.title}', '${chapter}')">
-                            ${chapter}
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        }
-
-        function toggleLike(title) {
-            const titleData = [...mangaData.manhwa, ...mangaData.manhua, ...mangaData.manga].find(t => t.title === title);
-            if (titleData) {
-                titleData.likes += auth.currentUser ? 1 : 0;
-                if (auth.currentUser) {
-                    auth.currentUser.likesCount += 1;
-                    localStorage.setItem('users', JSON.stringify(auth.users));
+                `;
+                div.addEventListener('click', () => showMangaDetails(item));
+                return div;
+            });
+            const elements = cloneItems(items);
+            const clonedElements = cloneItems(items);
+            container.append(...elements, ...clonedElements);
+            let isScrolling = false;
+            
+            container.addEventListener('scroll', () => {
+                if (!isScrolling) {
+                    const scrollWidth = container.scrollWidth / 2;
+                    if (container.scrollLeft >= scrollWidth) {
+                        isScrolling = true;
+                        container.scrollLeft -= scrollWidth;
+                        isScrolling = false;
+                    } else if (container.scrollLeft <= 0) {
+                        isScrolling = true;
+                        container.scrollLeft += scrollWidth;
+                        isScrolling = false;
+                    }
                 }
-                showTitlePage(titleData);
-            }
+            });
         }
-
-        function openChapter(title, chapter) {
-            alert(`Открыта ${chapter} из "${title}"`);
-        }
-
-        function toggleSidebar() {
-            const sidebar = document.querySelector('.sidebar');
-            sidebar.classList.toggle('active');
-        }
-
-        function changeTab(tabId) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
-            document.getElementById(tabId).classList.add('active');
-        }
-
-        function toggleTheme() {
-            const body = document.body;
-            body.setAttribute('data-theme', body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-        }
-
-        function showAuthModal(type) {
-            closeAllModals();
-            document.getElementById(`${type}Modal`).style.display = 'block';
-        }
-
-        function closeAllModals() {
-            document.querySelectorAll('.auth-modal').forEach(modal => modal.style.display = 'none');
-        }
-
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = this.querySelector('input[type="email"]').value;
-            const password = this.querySelector('input[type="password"]').value;
-            if (auth.login(email, password)) {
-                closeAllModals();
-                document.getElementById('profileTab').style.display = 'block';
-                document.getElementById('userPanel').innerHTML = `<span>${email}</span> | <span onclick="auth.logout(); location.reload();">Выйти</span>`;
-            } else {
-                alert('Неверный email или пароль');
-            }
+        // Инициализация рейтингов
+        const initRatings = (containerId, items) => {
+            const container = document.getElementById(containerId);
+            items.forEach((item, i) => {
+                const html = `
+                    <div class="rating-item">
+                        <span style="margin-right: 1rem">${i + 1}.</span>
+                        <img src="${item.image}" class="rating-img">
+                        <div>
+                            <h3>${item.title}</h3>
+                            <div>Рейтинг: ${item.rating}</div>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += html;
+            });
+        };
+        // Инициализация каталога
+        const initCatalog = () => {
+            const container = document.getElementById('catalog-grid');
+            data.catalog.forEach(item => {
+                const html = `
+                    <div class="catalog-item" data-title="${item.title.toLowerCase()}">
+                        <img src="${item.image}">
+                        <div class="catalog-info">
+                            <h3>${item.title}</h3>
+                            <p>${item.description}</p>
+                        </div>
+                    </div>
+                `;
+                const div = document.createElement('div');
+                div.innerHTML = html;
+                div.querySelector('.catalog-item').addEventListener('click', () => showMangaDetails(item));
+                container.appendChild(div);
+            });
+        };
+        // Поиск в каталоге
+        document.getElementById('search-input').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            document.querySelectorAll('.catalog-item').forEach(item => {
+                const title = item.dataset.title;
+                item.style.display = title.includes(searchTerm) ? 'block' : 'none';
+            });
         });
-
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = this.querySelector('input[type="email"]').value;
-            const password = this.querySelector('input[type="password"]').value;
-            const confirmPassword = this.querySelectorAll('input[type="password"]')[1].value;
-            if (password !== confirmPassword) {
-                alert('Пароли не совпадают');
-                return;
-            }
-            if (auth.register(email, password)) {
-                closeAllModals();
-                alert('Регистрация успешна! Теперь войдите.');
-            } else {
-                alert('Пользователь с таким email уже существует');
-            }
+        // Переключение вкладок
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+                document.getElementById(this.dataset.tab).classList.add('active');
+            });
         });
-
-        document.getElementById('forgotForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = this.querySelector('input[type="email"]').value;
-            if (auth.users.some(u => u.email === email)) {
-                alert('Ссылка для восстановления пароля отправлена на ваш email');
-            } else {
-                alert('Пользователь с таким email не найден');
-            }
-        });
-
-        // Инициализация главной страницы
-        function initMainPage() {
-            const mainCarousel = document.getElementById('main-carousel');
-            const allTitles = [...mangaData.manhwa, ...mangaData.manhua, ...mangaData.manga];
-            mainCarousel.innerHTML = allTitles.map(title => `
-                <div class="carousel-item" onclick="showTitlePage(${JSON.stringify(title).replace(/"/g, '&quot;')})">
-                    <img src="${title.image}" alt="${title.title}" class="carousel-img">
-                    <p>${title.title}</p>
-                </div>
-            `).join('');
-        }
-
-        initMainPage();
-    </script>
-</body>
-</html>
+        // Обработчики форм
+        function setupAuthForms() {
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const email = this.querySelector('input[type="email"]').value;
+                const password = this.querySelector('input[type="password"]').value;
+                
+                if (auth.login(email, password)) {
+                    updateUI();
+                    closeAllModals();
+                } else {
+                    alert('Неверные данные!');
+                }
+            });
+            document.getElementById('registerForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const nickname = document.getElementById('nicknameInput').value;
+                const email = this.querySelector('input[type="email"]').value;
+                const password = this.querySelector('input[type="password"]').value;
+             
